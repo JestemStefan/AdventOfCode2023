@@ -47,34 +47,44 @@ def solution_part_2():
         for line in file:
             first_digit = None
             last_digit = None
-            last_digit_idx = -1
             partial_string = ""
 
-            for idx, c in enumerate(line):
-                partial_string += c
-
+            for c in line:
                 if c.isdigit():
-                    if first_digit is None:
-                        first_digit = int(c)
-
-                    last_digit = int(c)
-                    last_digit_idx = idx
+                    first_digit = int(c)
+                    break
 
                 else:
+                    partial_string += c
                     if len(partial_string) < 3:
                         continue
 
                     for word in words_to_int_mapping:
-                        if first_digit is None:
-                            l_words_idx = partial_string.find(word)
-                            if l_words_idx != -1:
-                                first_digit = words_to_int_mapping[word]
+                        l_words_idx = partial_string.find(word)
+                        if l_words_idx != -1:
+                            first_digit = words_to_int_mapping[word]
+                            break
 
-                        r_words_idx = partial_string.rfind(word)
+                if first_digit is not None:
+                    break
 
-                        if r_words_idx != -1 and r_words_idx > last_digit_idx:
+            partial_string = ""
+            for c in reversed(line):
+                if c.isdigit():
+                    last_digit = int(c)
+                    break
+
+                else:
+                    partial_string = c + partial_string
+                    for word in words_to_int_mapping:
+                        r_words_idx = partial_string.find(word)
+
+                        if r_words_idx != -1:
                             last_digit = words_to_int_mapping[word]
-                            last_digit_idx = r_words_idx
+                            break
+
+                if last_digit is not None:
+                    break
 
             digit = first_digit * 10 + last_digit
 
@@ -85,4 +95,5 @@ def solution_part_2():
 
 if __name__ == "__main__":
     solution_part_1()
+    print("\n")
     solution_part_2()
